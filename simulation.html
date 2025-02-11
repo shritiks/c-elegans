@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- p5.js and Simulation.js are needed for this page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="js/Simulation.js"></script>
+</head>
+<body>
+    <h1>Gene Expression Simulation in <i>C. elegans</i></h1>
+  <div class="navbar">
+    <a href="home.html" class="tab">HOME</a>
+    <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
+    <a href="genes.html" class="tab">BEHAVIOURAL GENES</a>
+    <a href="simulation.html" class="tab">SIMULATION</a>
+  </div>
+  <div id="simulation" style="display: block;"></div>
+  <div class="simulation-container">
+    <div id="worm-canvas"></div>
+    <div class="controls">
+      <label for="unc47Slider">unc-47 (Locomotion)</label>
+      <input type="range" id="unc47Slider" min="0" max="100" value="50">
+      <label for="eat4Slider">eat-4 (Feeding)</label>
+      <input type="range" id="eat4Slider" min="0" max="100" value="50">
+      <label for="odr10Slider">odr-10 (Odor Response)</label>
+      <input type="range" id="odr10Slider" min="0" max="100" value="50">
+      <label for="glr1Slider">glr-1 (Neural Activity)</label>
+      <input type="range" id="glr1Slider" min="0" max="100" value="50">
+      <label>
+        <input type="checkbox" id="PositivefoodCheckbox"> Add favourable food source
+      </label>
+      <label>
+        <input type="checkbox" id="NegativefoodCheckbox"> Add unfavourable food source
+      </label>
+      <label>
+        <input type="checkbox" id="odorCheckbox"> Add odor source
+      </label>
+    </div>
+  </div>
+  <div id="simulation-text" class="description-box"></div>
+    Hover over a region on the <i>C. elegans</i>  body to see details on the organ.
+</div>
+</body>
+</html>
