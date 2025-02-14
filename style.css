@@ -179,7 +179,48 @@ canvas {
     transition: all 0.3s ease-in-out;
 }
 
-.home-text {
+.genes-head-left{
+    font-size: 35px;
+    text-align: left;
+    max-width: 200px;
+    margin-left:100px;
+    margin-top:40px;
+    color:white;
+    font-weight: bold;
+    /* margin: 40px auto; */
+
+}
+
+.genes-text-left{
+    max-width: 1400px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 20px;
+    margin-left:40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+.genes-head-right{
+    font-size:35px;
+    color:white;
+    font-weight:bold;
+    margin-right:100px;
+    max-width:3000px;
+    text-align:right;
+
+}
+
+.genes-text-right{
+    max-width: 1400px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 20px;
+    margin-right:40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.home-text{
     max-width: 900px;
     margin: 40px auto;
     background: rgba(255, 255, 255, 0.4);
@@ -187,6 +228,7 @@ canvas {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
 
 .parent-container {
     margin: 0;
