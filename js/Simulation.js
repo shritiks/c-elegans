@@ -180,7 +180,7 @@ class Worm {
                 target = this.randomTarget;
             } else {
                 if (PositivefoodSource && odorSource) {
-                    target = eat4 > odr10 ? foodSource : odorSource;
+                    target = eat4 > odr10 ? PositivefoodSource : odorSource;
                 } else if (odorSource) {
                     target = odorSource;
                 } else if (PositivefoodSource) {

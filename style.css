@@ -103,26 +103,28 @@ label {
 }
 
 input[type="range"] {
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
     height: 10px;
     filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.5));
-    border: white;
+    border: 1px solid white;
     border-radius: 5px;
     outline: none;
     transition: 0.2s;
 }
 
 input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
     -webkit-appearance: none;
     width: 20px;
     height: 20px;
-    background: white;
-    border: 2px solid #007bff;
+    background: #0e8fa9;
+    border: 2px solid black;
     border-radius: 50%;
     cursor: pointer;
     transition: 0.2s;
-    box-shadow: 0 0 10px rgba(174, 182, 185, 0.8)
+    /* box-shadow: 0 0 10px rgba(174, 182, 185, 0.8) */
 }
 
 
@@ -224,6 +226,24 @@ canvas {
 
 .home-text{
     max-width: 900px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.genes-head-mid{
+    font-size:35px;
+    color:white;
+    font-weight:bold;
+    margin-right:100px;
+    max-width:3000px;
+    text-align:center;
+}
+
+.genes-text-mid{
+    max-width: 1400px;
     margin: 40px auto;
     background: rgba(255, 255, 255, 0.4);
     padding: 20px;
