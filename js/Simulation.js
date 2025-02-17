@@ -36,13 +36,13 @@ function setup() {
 
     sources = [
         {Name : "Positive Food",
-        desc: "dh"
+        desc: "Bacterial lawns of E. coli strain OP50 or compost-dwelling microbes"
         },
         {Name : "Negative Food",
         desc: "Repellents like quinine or isoamyl alcohol or low quality food suppress feeding behaviour"
         },
         {Name : "Diacteyl Odorant",
-        desc: "dha"
+        desc: "Diacetyl is an odorant compound associated with bacterial food sources"
         },
         {Name: "Both",
             desc:"s"
