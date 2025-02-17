@@ -42,7 +42,7 @@ function setup() {
         desc: "Repellents like quinine or isoamyl alcohol or low quality food suppress feeding behaviour"
         },
         {Name : "Diacteyl Odorant",
-        desc: "Diacetyl is an odorant compound associated with bacterial food sources"
+        desc: "Diacetyl: odorant compound associated with bacterial food sources"
         },
         {Name: "Both",
             desc:"s"
