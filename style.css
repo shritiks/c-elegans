@@ -19,9 +19,10 @@
   --bad: #d0473a;
   --odor: #d5f694;
 
-  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Same typeface stack as the original site, used for every role */
+  --font-sans: "Optima", "Segoe UI", "Candara", "Trebuchet MS", sans-serif;
+  --font-serif: var(--font-sans);
+  --font-mono: var(--font-sans);
 
   --radius: 14px;
   --radius-sm: 8px;
@@ -466,6 +467,7 @@ canvas {
   color: var(--accent);
   min-width: 3ch;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 input[type="range"] {
