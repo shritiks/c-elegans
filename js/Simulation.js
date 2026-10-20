@@ -42,7 +42,7 @@ function setup() {
         desc: "Repellents like quinine or isoamyl alcohol or low quality food suppress feeding behaviour"
         },
         {Name : "Diacteyl Odorant",
-        desc: "Diacetyl: odorant compound associated with bacterial food sources"
+        desc: "Diacetyl, a volatile odorant associated with bacterial food sources and sensed by ODR-10 in the AWA neurons"
         },
         {Name: "Both",
             desc:"s"
@@ -53,14 +53,15 @@ function setup() {
 function draw() {
 
     //draw circular boundary
-    fill(200); // Grey background for the dish
-    stroke(0);
-    strokeWeight(2);
-    ellipse(width / 2, height / 2, 600);
+    clear();
+    fill(214, 220, 222); // Agar plate
+    stroke(47, 67, 80);
+    strokeWeight(3);
+    ellipse(width / 2, height / 2, 594);
    // Draw worm's trail
    for (let i = 0; i < trail.length; i++) {
     let alpha = map(i, 0, trail.length, 0, 50); // Fade effect
-    fill(150, alpha);
+    fill(90, 110, 120, alpha);
     noStroke();
     ellipse(trail[i].x, trail[i].y, 6, 6);
     }
@@ -68,31 +69,38 @@ function draw() {
     let descriptionBox = document.getElementById("simulation-text");
 
     if (descriptionBox) {
-        let descriptionText = "";
-
-         if (document.getElementById("PositivefoodCheckbox").checked) {
-            descriptionText = sources.find(source => source.Name === "Positive Food").desc;
-         }
-         if (document.getElementById("NegativefoodCheckbox").checked) {
-            descriptionText = sources.find(source => source.Name === "Negative Food").desc;
+        let active = [];
+        if (document.getElementById("PositivefoodCheckbox").checked) {
+            active.push(["Favourable food", sources.find(source => source.Name === "Positive Food").desc]);
+        }
+        if (document.getElementById("NegativefoodCheckbox").checked) {
+            active.push(["Unfavourable food", sources.find(source => source.Name === "Negative Food").desc]);
         }
         if (document.getElementById("odorCheckbox").checked) {
-            descriptionText = sources.find(source => source.Name === "Diacteyl Odorant").desc;
+            active.push(["Odour source", sources.find(source => source.Name === "Diacteyl Odorant").desc]);
         }
 
-        descriptionBox.innerText = descriptionText;
+        let html = active.length
+            ? active.map(a => "<p><strong>" + a[0] + "</strong>" + a[1] + "</p>").join("")
+            : '<span class="hint">Add a food or odour source to see what it represents.</span>';
+        // Only touch the DOM when the content changes
+        if (descriptionBox.dataset.html !== html) {
+            descriptionBox.innerHTML = html;
+            descriptionBox.dataset.html = html;
+        }
     }
 
     
-    unc47 = document.getElementById("unc47Slider").value;
-    eat4 = document.getElementById("eat4Slider").value;
-    odr10 = document.getElementById("odr10Slider").value;
-    glr1 = document.getElementById("glr1Slider").value;
+    // Slider values are strings; convert so comparisons are numeric ("100" > "50" is false as strings)
+    unc47 = Number(document.getElementById("unc47Slider").value);
+    eat4 = Number(document.getElementById("eat4Slider").value);
+    odr10 = Number(document.getElementById("odr10Slider").value);
+    glr1 = Number(document.getElementById("glr1Slider").value);
 
     let hoveredText = "";
     
     if (PositivefoodSource) {
-        fill(0, 153, 0);
+        fill(63, 179, 90);
         stroke(0);
         strokeWeight(2);
         ellipse(PositivefoodSource.x, PositivefoodSource.y, 20, 20);
@@ -101,7 +109,7 @@ function draw() {
         // }
     }
     if (NegativefoodSource) {
-        fill(153, 0, 0);
+        fill(208, 71, 58);
         stroke(0);
         strokeWeight(2);
         ellipse(NegativefoodSource.x, NegativefoodSource.y, 20, 20);
@@ -206,6 +214,17 @@ class Worm {
             
             direction.rotate(radians(waveOffset)); // Apply wave motion to movement direction
             direction.setMag(baseSpeed);
+
+            // Steer away from an unfavourable food source when close to it
+            if (NegativefoodSource) {
+                let away = p5.Vector.sub(this.pos, NegativefoodSource);
+                let d = away.mag();
+                if (d < 110) {
+                    away.setMag(baseSpeed * map(d, 0, 110, 2, 0.2));
+                    direction.add(away);
+                    direction.setMag(baseSpeed);
+                }
+            }
             this.pos.add(direction);
             
             movementPhase += 0.05;
@@ -232,7 +251,7 @@ class Worm {
     
      display() {
             noFill();
-            stroke(0);
+            stroke(24, 32, 38);
             strokeWeight(6);
             beginShape();
             for (let i = 0; i < this.segments.length; i++) {

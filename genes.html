@@ -3,97 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Behavioural Genes</title>
+  <title>Behavioural Genes · Gene Expression Simulation in C. elegans</title>
+  <meta name="description" content="The four C. elegans behavioural genes in the simulation: unc-47, eat-4, odr-10 and glr-1.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Behavioural genes in C. elegans">
+  <meta property="og:description" content="unc-47, eat-4, odr-10 and glr-1: how inhibitory, excitatory and sensory signalling shape behaviour.">
+  <meta property="og:url" content="https://shritiks.github.io/c-elegans/genes.html">
+  <meta property="og:image" content="https://shritiks.github.io/c-elegans/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;1,8..60,600&display=swap">
   <link rel="stylesheet" href="style.css">
-  <!-- p5.js and BG.js are needed for this page -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
-  <h1>Gene Expression Simulation in <i>C. elegans</i></h1>
-<div class="navbar">
-  <a href="home.html" class="tab">HOME</a>
-  <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
-  <a href="genes.html" class="tab">BEHAVIOURAL GENES</a>
-  <a href="simulation.html" class="tab">SIMULATION</a>
-</div>
-<body>
-<body>
-  <div class="genes-head-left">
-    <i>unc-47</i>
-  </div>
-  
-  <div class="genes-text-left">
-      <p>
-        The <i>unc-47</i> gene in C. elegans is located on the X chromosome and encodes the Vesicular GABA Transporter (VGAT), which is essential for inhibitory neurotransmission. It is primarily expressed in GABAergic neurons, where it facilitates the packaging of GABA (gamma-aminobutyric acid) into synaptic vesicles before release into the synapse. This process is crucial for regulating motor coordination and muscle relaxation.
-      </p>
-      <p>
-        Mutations in <i>unc-47</i> disrupt GABAergic signaling, leading to the uncoordinated (Unc) phenotype, characterized by hypercontraction, defective locomotion, and impaired behavioral responses. As a key neurobehavioral gene, <i>unc-47</i> provides critical insights into inhibitory neurotransmission, with implications for understanding GABAergic dysfunction in neurological disorders such as epilepsy and spasticity. 
-      </p>
-      <p>
-        Given its direct role in motor control, <i>unc-47</i> is a key component of my gene expression simulation project, as it allows for the visualization of how changes in inhibitory neurotransmission affect locomotion behaviors in C. elegans.
-      </p>
-  </div>
-  <div class="genes-head-right">
-    <i>eat-4</i>
-  </div>
-  
-  <div class="genes-text-right">
-      <p>
-        The <i>eat-4</i> gene in C. elegans is located on chromosome I and encodes the Vesicular Glutamate Transporter (VGLUT), which is essential for excitatory neurotransmission. It is primarily expressed in glutamatergic neurons, where it facilitates the packaging of glutamate into synaptic vesicles before release into the synapse. This process is critical for various neural functions, including feeding behavior, locomotion, and sensory processing.
-      </p>
-      <p>
-        Mutations in <i>eat-4</i>  impair glutamatergic signaling, leading to defects in pharyngeal pumping (feeding), mechanosensory responses, and foraging behavior, making it an important neurobehavioral gene. As glutamate is a major excitatory neurotransmitter across species, <i>eat-4</i>  serves as a model for understanding excitatory signaling and its role in behavior.
-      </p>
-      <p>
-        In my gene expression simulation project,<i>eat-4</i>  is included to demonstrate how excitatory neurotransmission influences feeding behavior and locomotion, helping to illustrate the balance between excitatory and inhibitory signals in shaping neural function.
-      </p>
-  </div>
-  <div class="genes-head-left">
-    <i>odr-10</i>
-  </div>
-  
-  <div class="genes-text-left">
-      <p>
-        The <i>odr-10</i>  gene in C. elegans is located on chromosome V and encodes a G-protein-coupled odorant receptor (GPCR) that is essential for olfactory sensation. It is primarily expressed in the AWC olfactory neurons, where it detects volatile odorants, particularly diacetyl, a key attractant associated with bacterial food sources. This gene plays a crucial role in chemotaxis, enabling C. elegans to navigate toward favorable environments based on chemical cues. 
-      </p>
-      <p>
-        Mutations in <i>odr-10</i> disrupt olfactory signaling, leading to defects in food-seeking behavior, impairing the worm’s ability to locate bacterial food sources efficiently. As olfaction is tightly linked to survival and behavior, <i>odr-10</i> provides valuable insights into sensory processing and neural circuit function
-      </p>
-      <p>
-        In my simulation project, <i>odr-10</i> is included to illustrate how sensory input, particularly odor detection, influences locomotion and feeding behavior, helping to model how environmental cues shape neural activity and decision-making in C. elegans.
-      </p>
-  </div>
-  <div class="genes-head-right">
-    <i>glr-1</i>
-  </div>
-  
-  <div class="genes-text-right">
-      <p>
-        The <i>glr-1</i> gene in C. elegans is located on chromosome X and encodes an AMPA-type ionotropic glutamate receptor, which is essential for excitatory neurotransmission and synaptic plasticity. It is widely expressed in interneurons and motor neurons, where it mediates fast synaptic transmission by responding to glutamate release from presynaptic neurons. This gene plays a critical role in locomotion, mechanosensation, and learning-related behaviors by regulating excitatory signaling within neural circuits. 
-      </p>
-      <p>
-        Mutations in <i>glr-1</i> impair glutamatergic transmission, leading to defects in movement coordination, sensory processing, and habituation to repeated stimuli, making it a key neurobehavioral gene. Since glutamate signaling is fundamental to nervous system function across species, <i>glr-1</i> serves as an important model for studying synaptic plasticity and behavioral modulation.
-      </p>
-      <p>
-        In my simulation project, <i>glr-1</i> is included to demonstrate how excitatory neurotransmission influences locomotion and adaptive behaviors, helping to visualize the neural mechanisms underlying sensory-motor integration and behavioral flexibility in C. elegans.
-      </p>
-  </div>
 
-  <div class="genes-head-mid">
-    <i>Interaction between genes</i>
-  </div>
-  
-  <div class="genes-text-mid">
-      <p>
-        The genes <i>unc-47, eat-4, odr-10,</i> and <i>glr-1</i> interact within C. elegans neural circuits to regulate behavior by balancing excitatory and inhibitory signaling in response to environmental cues.
-      </p>
-      <p>
-        <i>odr-10</i>, an olfactory receptor, detects food-related odorants and activates glutamatergic neurons, which rely on <i>eat-4</i> to package and release glutamate, stimulating downstream neural circuits. <i>glr-1</i>, an AMPA-type glutamate receptor, mediates excitatory transmission, influencing locomotion and sensory processing. Meanwhile, <i>unc-47</i>, encoding the vesicular GABA transporter, modulates inhibitory neurotransmission to refine motor output and prevent excessive excitation. 
-      </p>
-      <p>
-        Together, these genes coordinate sensory input, decision-making, and motor control, shaping behaviors like chemotaxis, feeding, and adaptive movement. Their interaction highlights the dynamic balance of excitatory and inhibitory signals in shaping neural function and behavior, which is central to my gene expression simulation project.
-      </p>
-  </div>
-  
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#162027"/><path d="M5 21c4-9 8-9 11-4s7 5 11-4" fill="none" stroke="#35b9cf" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <span>Gene Expression in <i>C.&nbsp;elegans</i></span>
+      </a>
+      <nav class="navbar" aria-label="Main">
+        <a href="index.html" class="tab">Home</a>
+        <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
+        <a href="genes.html" class="tab" aria-current="page"><span class="nav-long">Behavioural </span>Genes</a>
+        <a href="simulation.html" class="tab">Simulation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <header class="page-head">
+      <p class="eyebrow">Step 02 · Behavioural genes</p>
+      <h1>Four genes, one behaviour</h1>
+      <p class="lede">Each slider in the simulation sets the expression of one of these genes. Together they cover inhibitory transmission, excitatory transmission and olfaction.</p>
+    </header>
+
+    <nav class="gene-index" aria-label="Genes on this page">
+      <a class="chip" href="#unc-47"><i>unc-47</i></a>
+      <a class="chip" href="#eat-4"><i>eat-4</i></a>
+      <a class="chip" href="#odr-10"><i>odr-10</i></a>
+      <a class="chip" href="#glr-1"><i>glr-1</i></a>
+      <a class="chip" href="#interaction">Interaction between genes</a>
+    </nav>
+
+    <article class="card gene" id="unc-47">
+      <div>
+        <h2 class="gene-name">unc-47</h2>
+        <dl class="gene-meta">
+          <div><dt>Encodes</dt><dd>Vesicular GABA transporter (VGAT)</dd></div>
+          <div><dt>Chromosome</dt><dd>III</dd></div>
+          <div><dt>Signalling</dt><dd>Inhibitory (GABA)</dd></div>
+          <div><dt>Simulation slider</dt><dd>Locomotion</dd></div>
+        </dl>
+      </div>
+      <div class="gene-body">
+        <p>
+          The <i>unc-47</i> gene in <i>C. elegans</i> is located on chromosome III and encodes the Vesicular GABA Transporter (VGAT), which is essential for inhibitory neurotransmission. It is primarily expressed in GABAergic neurons, where it facilitates the packaging of GABA (gamma-aminobutyric acid) into synaptic vesicles before release into the synapse. This process is crucial for regulating motor coordination and muscle relaxation.
+        </p>
+        <p>
+          Mutations in <i>unc-47</i> disrupt GABAergic signalling, leading to the uncoordinated (Unc) phenotype, characterised by hypercontraction, defective locomotion, and impaired behavioural responses. As a key neurobehavioural gene, <i>unc-47</i> provides critical insights into inhibitory neurotransmission, with implications for understanding GABAergic dysfunction in neurological disorders such as epilepsy and spasticity.
+        </p>
+        <p>
+          Given its direct role in motor control, <i>unc-47</i> is a key component of the simulation, as it allows for the visualisation of how changes in inhibitory neurotransmission affect locomotion behaviours in <i>C. elegans</i>.
+        </p>
+      </div>
+    </article>
+
+    <article class="card gene" id="eat-4">
+      <div>
+        <h2 class="gene-name">eat-4</h2>
+        <dl class="gene-meta">
+          <div><dt>Encodes</dt><dd>Vesicular glutamate transporter (VGLUT)</dd></div>
+          <div><dt>Chromosome</dt><dd>III</dd></div>
+          <div><dt>Signalling</dt><dd>Excitatory (glutamate)</dd></div>
+          <div><dt>Simulation slider</dt><dd>Feeding</dd></div>
+        </dl>
+      </div>
+      <div class="gene-body">
+        <p>
+          The <i>eat-4</i> gene in <i>C. elegans</i> is located on chromosome III and encodes the Vesicular Glutamate Transporter (VGLUT), which is essential for excitatory neurotransmission. It is primarily expressed in glutamatergic neurons, where it facilitates the packaging of glutamate into synaptic vesicles before release into the synapse. This process is critical for various neural functions, including feeding behaviour, locomotion, and sensory processing.
+        </p>
+        <p>
+          Mutations in <i>eat-4</i> impair glutamatergic signalling, leading to defects in pharyngeal pumping (feeding), mechanosensory responses, and foraging behaviour, making it an important neurobehavioural gene. As glutamate is a major excitatory neurotransmitter across species, <i>eat-4</i> serves as a model for understanding excitatory signalling and its role in behaviour.
+        </p>
+        <p>
+          In the simulation, <i>eat-4</i> is included to demonstrate how excitatory neurotransmission influences feeding behaviour and locomotion, helping to illustrate the balance between excitatory and inhibitory signals in shaping neural function.
+        </p>
+      </div>
+    </article>
+
+    <article class="card gene" id="odr-10">
+      <div>
+        <h2 class="gene-name">odr-10</h2>
+        <dl class="gene-meta">
+          <div><dt>Encodes</dt><dd>Diacetyl-sensing GPCR</dd></div>
+          <div><dt>Chromosome</dt><dd>X</dd></div>
+          <div><dt>Expressed in</dt><dd>AWA olfactory neurons</dd></div>
+          <div><dt>Simulation slider</dt><dd>Odour response</dd></div>
+        </dl>
+      </div>
+      <div class="gene-body">
+        <p>
+          The <i>odr-10</i> gene in <i>C. elegans</i> is located on chromosome X and encodes a G-protein-coupled odorant receptor (GPCR) that is essential for olfactory sensation. It is expressed in the AWA olfactory neurons, where it detects volatile odorants, particularly diacetyl, a key attractant associated with bacterial food sources. This gene plays a crucial role in chemotaxis, enabling <i>C. elegans</i> to navigate toward favourable environments based on chemical cues.
+        </p>
+        <p>
+          Mutations in <i>odr-10</i> disrupt olfactory signalling, leading to defects in food-seeking behaviour and impairing the worm’s ability to locate bacterial food sources efficiently. As olfaction is tightly linked to survival and behaviour, <i>odr-10</i> provides valuable insights into sensory processing and neural circuit function.
+        </p>
+        <p>
+          In the simulation, <i>odr-10</i> is included to illustrate how sensory input, particularly odour detection, influences locomotion and feeding behaviour, helping to model how environmental cues shape neural activity and decision-making in <i>C. elegans</i>.
+        </p>
+      </div>
+    </article>
+
+    <article class="card gene" id="glr-1">
+      <div>
+        <h2 class="gene-name">glr-1</h2>
+        <dl class="gene-meta">
+          <div><dt>Encodes</dt><dd>AMPA-type ionotropic glutamate receptor</dd></div>
+          <div><dt>Chromosome</dt><dd>III</dd></div>
+          <div><dt>Signalling</dt><dd>Excitatory (glutamate)</dd></div>
+          <div><dt>Simulation slider</dt><dd>Neural activity</dd></div>
+        </dl>
+      </div>
+      <div class="gene-body">
+        <p>
+          The <i>glr-1</i> gene in <i>C. elegans</i> is located on chromosome III and encodes an AMPA-type ionotropic glutamate receptor, which is essential for excitatory neurotransmission and synaptic plasticity. It is widely expressed in interneurons and motor neurons, where it mediates fast synaptic transmission by responding to glutamate release from presynaptic neurons. This gene plays a critical role in locomotion, mechanosensation, and learning-related behaviours by regulating excitatory signalling within neural circuits.
+        </p>
+        <p>
+          Mutations in <i>glr-1</i> impair glutamatergic transmission, leading to defects in movement coordination, sensory processing, and habituation to repeated stimuli, making it a key neurobehavioural gene. Since glutamate signalling is fundamental to nervous system function across species, <i>glr-1</i> serves as an important model for studying synaptic plasticity and behavioural modulation.
+        </p>
+        <p>
+          In the simulation, <i>glr-1</i> is included to demonstrate how excitatory neurotransmission influences locomotion and adaptive behaviours, helping to visualise the neural mechanisms underlying sensory-motor integration and behavioural flexibility in <i>C. elegans</i>.
+        </p>
+      </div>
+    </article>
+
+    <article class="card gene gene-interaction" id="interaction">
+      <div>
+        <h2 class="gene-name" style="font-style: normal;">Interaction between genes</h2>
+      </div>
+      <div class="gene-body">
+        <p>
+          The genes <i>unc-47</i>, <i>eat-4</i>, <i>odr-10</i> and <i>glr-1</i> interact within <i>C. elegans</i> neural circuits to regulate behaviour by balancing excitatory and inhibitory signalling in response to environmental cues.
+        </p>
+        <p>
+          <i>odr-10</i>, an olfactory receptor, detects food-related odorants and activates glutamatergic neurons, which rely on <i>eat-4</i> to package and release glutamate, stimulating downstream neural circuits. <i>glr-1</i>, an AMPA-type glutamate receptor, mediates excitatory transmission, influencing locomotion and sensory processing. Meanwhile, <i>unc-47</i>, encoding the vesicular GABA transporter, modulates inhibitory neurotransmission to refine motor output and prevent excessive excitation.
+        </p>
+        <p>
+          Together, these genes coordinate sensory input, decision-making, and motor control, shaping behaviours like chemotaxis, feeding, and adaptive movement. Their interaction highlights the dynamic balance of excitatory and inhibitory signals in shaping neural function and behaviour, which is central to this simulation.
+        </p>
+      </div>
+    </article>
+
+    <p style="margin-top: 32px;"><a href="simulation.html" class="btn">Try it in the simulation <span aria-hidden="true">&rarr;</span></a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Built by Shritik with p5.js</span>
+      <a href="https://github.com/shritiks/c-elegans">Source on GitHub</a>
+    </div>
+  </footer>
+
 </body>
 </html>

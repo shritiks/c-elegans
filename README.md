@@ -14,7 +14,7 @@ This project is an interactive **gene expression simulation** for *C. elegans*, 
 1. **Adjust gene expression** using the sliders.
 2. **Toggle food and odor sources** using the checkboxes.
 3. **Observe how the worm moves** based on expression levels.
-4. **Hover over the worm** to see details about its neural and behavioral state.
+4. On the anatomy page, **hover over the worm** to highlight each organ and read what it does.
 
 ## 🛠️ Technologies Used
 - **p5.js** – Interactive simulation rendering
@@ -24,13 +24,16 @@ This project is an interactive **gene expression simulation** for *C. elegans*, 
 
 ## 📂 Folder Structure
 ```
-├── 📂 images/
-├── 📂 js/            
-├── 📜 index.html        # Main webpage
-├── 📜 style.css         # Styling for the UI
-├── 📜 script.js         # Handles UI interactions
-├── 📜 simulation.js     # Core logic for worm movement & gene simulation
-└── 📜 README.md         # Project documentation (this file)
+├── 📂 images/            # Worm micrograph, organ overlays, link-preview image
+├── 📂 js/
+│   ├── Worm.js           # Interactive anatomy (hover to highlight organs)
+│   └── Simulation.js     # Worm movement & gene expression logic
+├── 📜 index.html         # Home page
+├── 📜 c-elegans.html     # Anatomy page
+├── 📜 genes.html         # Behavioural genes page
+├── 📜 simulation.html    # Simulation page
+├── 📜 style.css          # Shared styling
+└── 📜 README.md          # Project documentation (this file)
 ```
 
 ## 🌍 Live Demo

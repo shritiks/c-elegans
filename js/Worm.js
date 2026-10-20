@@ -11,10 +11,7 @@ function preload(){
     headOverlay = loadImage('images/Head.png');
     intestineOverlay = loadImage('images/Intestine.png');
     uterusOverlay = loadImage('images/Uterus.png');
-    pharynxOverlay = loadImage('images/Pharynx.png', 
-    () => { console.log("Image loaded successfully."); }, 
-    (err) => { console.error("Error loading image:", err); }
-);
+    pharynxOverlay = loadImage('images/Pharynx.png');
     PGonadOverlay = loadImage('images/Proximal_Gonad.png');
     DGonadOverlay = loadImage('images/Distal_Gonad.png');
     anusOverlay = loadImage('images/Anus.png')
@@ -38,7 +35,6 @@ function setup() {
           console.error("Canvas parent div not found!");
         }
         imageMode(CENTER);
-        console.log("Pharynx overlay dimensions:", pharynxOverlay.width, pharynxOverlay.height);
     
         let wormCenterX = width / 2;
         let wormCenterY = height / 2;
@@ -363,16 +359,26 @@ function draw() {
     // Use the distance from the mouse to the region's center as a simple hover check.
     if (dist(mouseX, mouseY, region.x, region.y) < region.hoverRadius) {
         hoveredRegion=region
-        console.log("Hovering over region:", region.name);  // Debug log
         tint(57, 255, 20, 200);
         image(region.overlay, width / 2+12, height / 2, region.overlay.width * scaleFactor-250, region.overlay.height * scaleFactor);
         noTint();
     }
-    let descriptionBox = document.getElementById("c-elegans-text");
-if (descriptionBox) {
-    descriptionBox.innerText = hoveredRegion ? hoveredRegion.desc : "Hover over a region on the C. elegans body to see details on the organ." ;
 }
-}
+
+  // Update the description panel (only when the hovered organ changes)
+  let descriptionBox = document.getElementById("c-elegans-text");
+  let key = hoveredRegion ? hoveredRegion.desc : "";
+  if (descriptionBox && descriptionBox.dataset.key !== key) {
+      descriptionBox.dataset.key = key;
+      if (hoveredRegion) {
+          let split = hoveredRegion.desc.indexOf(": ");
+          let title = hoveredRegion.desc.slice(0, split);
+          let body = hoveredRegion.desc.slice(split + 2);
+          descriptionBox.innerHTML = "<strong>" + title + "</strong>" + body + ".";
+      } else {
+          descriptionBox.innerHTML = '<span class="hint">Hover over a region on the <i>C. elegans</i> body to see details on the organ.</span>';
+      }
+  }
 
 
 }

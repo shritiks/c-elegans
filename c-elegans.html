@@ -3,27 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C. elegans Simulation</title>
+  <title>Anatomy · Gene Expression Simulation in C. elegans</title>
+  <meta name="description" content="Interactive anatomy of an adult C. elegans hermaphrodite: hover over a region to highlight the organ.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Anatomy of C. elegans">
+  <meta property="og:description" content="Hover over a region of the worm to highlight the organ and read what it does.">
+  <meta property="og:url" content="https://shritiks.github.io/c-elegans/c-elegans.html">
+  <meta property="og:image" content="https://shritiks.github.io/c-elegans/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;1,8..60,600&display=swap">
   <link rel="stylesheet" href="style.css">
-  <!-- p5.js and BG.js are needed for this page -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
 </head>
 <body>
-    <h1>Gene Expression Simulation in <i>C. elegans</i></h1>
-  <div class="navbar">
-    <a href="home.html" class="tab">HOME</a>
-    <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
-    <a href="genes.html" class="tab">BEHAVIOURAL GENES</a>
-    <a href="simulation.html" class="tab">SIMULATION</a>
-  </div>
-  <div id="c-elegans" style="display: block; margin-bottom:0px;"></div>
-  <div class="worm-display">
-    <div id="c-elegans-canvas"></div>
-  </div>
-  <script src="js/Worm.js"></script>
-  <div id="c-elegans-text" class="description-box">
-    Hover over a region on the <i>C. elegans</i>  body to see details on the organ.
-</div>
 
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#162027"/><path d="M5 21c4-9 8-9 11-4s7 5 11-4" fill="none" stroke="#35b9cf" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <span>Gene Expression in <i>C.&nbsp;elegans</i></span>
+      </a>
+      <nav class="navbar" aria-label="Main">
+        <a href="index.html" class="tab">Home</a>
+        <a href="c-elegans.html" class="tab" aria-current="page"><i>C. elegans</i></a>
+        <a href="genes.html" class="tab"><span class="nav-long">Behavioural </span>Genes</a>
+        <a href="simulation.html" class="tab">Simulation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <header class="page-head">
+      <p class="eyebrow">Step 01 · Anatomy</p>
+      <h1>Anatomy of <i>C.&nbsp;elegans</i></h1>
+      <p class="lede">An adult hermaphrodite, roughly 1&nbsp;mm long. Hover over a region of the body to highlight the organ and read what it does.</p>
+      <p class="mobile-note">On a phone, tap a region of the worm. The anatomy view is easiest to use on a larger screen.</p>
+    </header>
+
+    <section class="card anatomy-card">
+      <div id="c-elegans" style="display: block;"></div>
+      <div class="worm-display">
+        <div id="c-elegans-canvas"></div>
+      </div>
+      <div id="c-elegans-text" class="description-box" aria-live="polite">
+        <span class="hint">Hover over a region on the <i>C. elegans</i> body to see details on the organ.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Built by Shritik with p5.js</span>
+      <a href="https://github.com/shritiks/c-elegans">Source on GitHub</a>
+    </div>
+  </footer>
+
+  <script src="js/Worm.js"></script>
 </body>
 </html>

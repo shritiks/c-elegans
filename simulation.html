@@ -3,45 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulation</title>
+  <title>Simulation · Gene Expression Simulation in C. elegans</title>
+  <meta name="description" content="Adjust expression of unc-47, eat-4, odr-10 and glr-1 and watch a simulated C. elegans respond to food and odour.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="C. elegans gene expression simulation">
+  <meta property="og:description" content="Adjust expression of four behavioural genes and watch a simulated worm respond to food and odour.">
+  <meta property="og:url" content="https://shritiks.github.io/c-elegans/simulation.html">
+  <meta property="og:image" content="https://shritiks.github.io/c-elegans/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;1,8..60,600&display=swap">
   <link rel="stylesheet" href="style.css">
-  <!-- p5.js and Simulation.js are needed for this page -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
   <script src="js/Simulation.js"></script>
 </head>
 <body>
-    <h1>Gene Expression Simulation in <i>C. elegans</i></h1>
-  <div class="navbar">
-    <a href="home.html" class="tab">HOME</a>
-    <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
-    <a href="genes.html" class="tab">BEHAVIOURAL GENES</a>
-    <a href="simulation.html" class="tab">SIMULATION</a>
-  </div>
-  <div id="simulation" style="display: block;"></div>
-  <div class="simulation-container">
-    <div id="worm-canvas"></div>
-    <div class="controls">
-      <label for="unc47Slider">unc-47 (Locomotion)</label>
-      <input type="range" id="unc47Slider" min="0" max="100" value="50">
-      <label for="eat4Slider">eat-4 (Feeding)</label>
-      <input type="range" id="eat4Slider" min="0" max="100" value="50">
-      <label for="odr10Slider">odr-10 (Odor Response)</label>
-      <input type="range" id="odr10Slider" min="0" max="100" value="50">
-      <label for="glr1Slider">glr-1 (Neural Activity)</label>
-      <input type="range" id="glr1Slider" min="0" max="100" value="50">
-      <label>
-        <input type="checkbox" id="PositivefoodCheckbox"> Add favourable food source
-      </label>
-      <label>
-        <input type="checkbox" id="NegativefoodCheckbox"> Add unfavourable food source
-      </label>
-      <label>
-        <input type="checkbox" id="odorCheckbox"> Add odor source
-      </label>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#162027"/><path d="M5 21c4-9 8-9 11-4s7 5 11-4" fill="none" stroke="#35b9cf" stroke-width="3.2" stroke-linecap="round"/></svg>
+        <span>Gene Expression in <i>C.&nbsp;elegans</i></span>
+      </a>
+      <nav class="navbar" aria-label="Main">
+        <a href="index.html" class="tab">Home</a>
+        <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
+        <a href="genes.html" class="tab"><span class="nav-long">Behavioural </span>Genes</a>
+        <a href="simulation.html" class="tab" aria-current="page">Simulation</a>
+      </nav>
     </div>
-  </div>
-  <div id="simulation-text" class="description-box"></div>
-    Hover over a region on the <i>C. elegans</i>  body to see details on the organ.
-</div>
+  </header>
+
+  <main>
+    <header class="page-head">
+      <p class="eyebrow">Step 03 · Simulation</p>
+      <h1>Simulate behaviour</h1>
+      <p class="lede">Set the expression level of each gene and add stimuli to the plate. The worm's movement updates in real time.</p>
+    </header>
+
+    <div id="simulation" style="display: block;"></div>
+
+    <div class="sim-layout">
+      <section class="card canvas-card" aria-label="Simulated plate">
+        <div id="worm-canvas"></div>
+        <div id="simulation-text" class="description-box" aria-live="polite">
+          <span class="hint">Add a food or odour source to see what it represents.</span>
+        </div>
+      </section>
+
+      <aside class="card controls-card controls" aria-label="Simulation controls">
+        <h2>Gene expression</h2>
+
+        <div class="slider-group">
+          <div class="slider-head">
+            <label for="unc47Slider"><i>unc-47</i><span class="role">Locomotion</span></label>
+            <output for="unc47Slider">50</output>
+          </div>
+          <input type="range" id="unc47Slider" min="0" max="100" value="50">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-head">
+            <label for="eat4Slider"><i>eat-4</i><span class="role">Feeding</span></label>
+            <output for="eat4Slider">50</output>
+          </div>
+          <input type="range" id="eat4Slider" min="0" max="100" value="50">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-head">
+            <label for="odr10Slider"><i>odr-10</i><span class="role">Odour response</span></label>
+            <output for="odr10Slider">50</output>
+          </div>
+          <input type="range" id="odr10Slider" min="0" max="100" value="50">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-head">
+            <label for="glr1Slider"><i>glr-1</i><span class="role">Neural activity</span></label>
+            <output for="glr1Slider">50</output>
+          </div>
+          <input type="range" id="glr1Slider" min="0" max="100" value="50">
+        </div>
+
+        <h2>Environment</h2>
+        <label class="toggle">
+          <input type="checkbox" id="PositivefoodCheckbox"> Favourable food source
+          <span class="swatch" style="background: rgb(63, 179, 90);"></span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="NegativefoodCheckbox"> Unfavourable food source
+          <span class="swatch" style="background: rgb(208, 71, 58);"></span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="odorCheckbox"> Odour source (diacetyl)
+          <span class="swatch" style="background: rgb(213, 246, 148);"></span>
+        </label>
+      </aside>
+    </div>
+
+    <section class="card model-rules" aria-labelledby="rules-title">
+      <h2 id="rules-title" class="section-title">How the model behaves</h2>
+      <ul>
+        <li>If <i>unc-47</i> is higher than both <i>eat-4</i> and <i>odr-10</i>, inhibition dominates: the worm ignores stimuli and wanders, changing direction frequently.</li>
+        <li>Otherwise it moves toward the odour source or favourable food. When both are present, it chooses food if <i>eat-4</i> exceeds <i>odr-10</i>, and the odour otherwise.</li>
+        <li><i>glr-1</i> sets crawling speed and how often the worm changes heading while exploring.</li>
+        <li>The worm turns away from an unfavourable food source when it gets close.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Built by Shritik with p5.js</span>
+      <a href="https://github.com/shritiks/c-elegans">Source on GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    // Live readouts and filled track for the gene sliders
+    document.querySelectorAll('.slider-group input[type="range"]').forEach(function (slider) {
+      var out = slider.parentElement.querySelector('output');
+      function sync() {
+        out.textContent = slider.value;
+        slider.style.setProperty('--fill', slider.value + '%');
+      }
+      slider.addEventListener('input', sync);
+      sync();
+    });
+  </script>
 </body>
 </html>
