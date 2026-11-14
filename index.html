@@ -1,95 +1,271 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gene Expression Simulation in C. elegans</title>
-  <meta name="description" content="An interactive simulation of how expression of unc-47, eat-4, odr-10 and glr-1 shapes locomotion, feeding and odour response in C. elegans.">
-  <meta property="og:type" content="website">
+  <meta name="description" content="An interactive model of how expression of unc-47, eat-4, odr-10 and glr-1 changes the way a simulated C. elegans responds to food, diacetyl and a repellent.">
+  <meta property="og:type" content="article">
   <meta property="og:title" content="Gene Expression Simulation in C. elegans">
-  <meta property="og:description" content="Adjust expression of four behavioural genes and watch a simulated worm respond to food and odour.">
+  <meta property="og:description" content="Set the expression of four neuronal genes and watch a simulated worm choose between food, an odour and a repellent.">
   <meta property="og:url" content="https://shritiks.github.io/c-elegans/">
   <meta property="og:image" content="https://shritiks.github.io/c-elegans/images/og-preview.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#232a31">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="index.html">
-        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#162027"/><path d="M5 21c4-9 8-9 11-4s7 5 11-4" fill="none" stroke="#35b9cf" stroke-width="3.2" stroke-linecap="round"/></svg>
-        <span>Gene Expression in <i>C.&nbsp;elegans</i></span>
-      </a>
-      <nav class="navbar" aria-label="Main">
-        <a href="index.html" class="tab" aria-current="page">Home</a>
-        <a href="c-elegans.html" class="tab"><i>C. elegans</i></a>
-        <a href="genes.html" class="tab"><span class="nav-long">Behavioural </span>Genes</a>
-        <a href="simulation.html" class="tab">Simulation</a>
-      </nav>
-    </div>
+  <header class="topline wide">
+    <span>Shritik</span>
+    <nav aria-label="Sections">
+      <a href="#simulation">Simulation</a>
+      <a href="#genes">Genes</a>
+      <a href="#anatomy">Anatomy</a>
+      <a href="#model">Model</a>
+      <a href="https://github.com/shritiks/c-elegans">Source</a>
+    </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <div>
-        <p class="eyebrow">Interactive behavioural genetics</p>
-        <h1>Gene Expression Simulation in <i>C.&nbsp;elegans</i></h1>
-        <p class="lede">
-          This project is an interactive gene expression simulation for <i>C. elegans</i>, designed to explore how changes in gene expression affect behaviour.
-          By manipulating expression levels of key genes, users can observe the impact on movement, feeding, and odour response.
-        </p>
-        <div class="hero-actions">
-          <a href="simulation.html" class="btn">Launch the simulation <span aria-hidden="true">&rarr;</span></a>
-          <a href="c-elegans.html" class="btn btn-ghost">Start with the anatomy</a>
+    <div class="title wide">
+      <h1>Gene expression simulation in <i>C.&nbsp;elegans</i></h1>
+      <p class="standfirst">
+        Four genes that handle inhibitory, excitatory and olfactory signalling in the nematode,
+        and a simulated worm whose behaviour changes as you turn each one up or down.
+      </p>
+    </div>
+
+    <div class="column prose">
+      <p>
+        <i>Caenorhabditis elegans</i> has 302 neurons and a behavioural repertoire simple enough to score by eye:
+        crawl, turn, approach, avoid. That makes it a good animal for asking how the amount of one gene product
+        changes what the whole animal does.
+      </p>
+      <p>
+        The model below reduces that question to four genes and three stimuli. Set expression with the sliders,
+        put stimuli on the plate, and watch where the worm goes.
+      </p>
+    </div>
+
+    <!-- Figure 1 -->
+    <figure id="simulation" class="wide">
+      <div class="well sim">
+        <div class="sim-plate">
+          <div id="worm-canvas" role="img" aria-label="Simulated worm crawling on a round agar plate"></div>
+          <p class="readout" aria-live="polite">
+            <span>Behaviour: <strong id="sim-state">exploring</strong></span>
+            <span>Speed <strong id="sim-speed">0.60</strong> &times; maximum</span>
+            <span>Elapsed <strong id="sim-time">0</strong> s</span>
+          </p>
+        </div>
+
+        <div class="sim-controls">
+          <h3>Expression, 0 to 100</h3>
+
+          <div class="gene-slider">
+            <div class="row">
+              <label for="unc47Slider"><i>unc-47</i><small>GABA transporter, inhibitory</small></label>
+              <output for="unc47Slider">50</output>
+            </div>
+            <input type="range" id="unc47Slider" min="0" max="100" value="50">
+          </div>
+
+          <div class="gene-slider is-food">
+            <div class="row">
+              <label for="eat4Slider"><i>eat-4</i><small>Glutamate transporter, excitatory</small></label>
+              <output for="eat4Slider">50</output>
+            </div>
+            <input type="range" id="eat4Slider" min="0" max="100" value="50">
+          </div>
+
+          <div class="gene-slider is-odour">
+            <div class="row">
+              <label for="odr10Slider"><i>odr-10</i><small>Diacetyl receptor, olfactory</small></label>
+              <output for="odr10Slider">50</output>
+            </div>
+            <input type="range" id="odr10Slider" min="0" max="100" value="50">
+          </div>
+
+          <div class="gene-slider">
+            <div class="row">
+              <label for="glr1Slider"><i>glr-1</i><small>Glutamate receptor, excitatory</small></label>
+              <output for="glr1Slider">50</output>
+            </div>
+            <input type="range" id="glr1Slider" min="0" max="100" value="50">
+          </div>
+
+          <h3>On the plate</h3>
+
+          <label class="stimulus is-food">
+            <input type="checkbox" id="PositivefoodCheckbox">
+            <span>Food<small>A lawn of <i>E.&nbsp;coli</i> OP50</small></span>
+            <span class="key" aria-hidden="true"></span>
+          </label>
+          <label class="stimulus is-odour">
+            <input type="checkbox" id="odorCheckbox">
+            <span>Diacetyl<small>An attractive odour sensed through ODR-10</small></span>
+            <span class="key" aria-hidden="true"></span>
+          </label>
+          <label class="stimulus is-repel">
+            <input type="checkbox" id="NegativefoodCheckbox">
+            <span>Repellent<small>An aversive cue such as quinine or 2-nonanone</small></span>
+            <span class="key" aria-hidden="true"></span>
+          </label>
+
+          <div class="sim-buttons">
+            <button type="button" id="sim-pause">Pause</button>
+            <button type="button" id="sim-reset">Reset</button>
+          </div>
         </div>
       </div>
-      <figure class="hero-figure">
-        <img src="images/C_elegans.png" alt="Micrograph of an adult C. elegans hermaphrodite" width="1503" height="471">
-        <figcaption>Adult hermaphrodite, ~1&nbsp;mm long</figcaption>
+      <figcaption>
+        <b>Figure 1.</b> A simulated worm on an agar plate. Expression is in arbitrary units.
+        Drag a stimulus to move it. The dashed ring marks the distance at which the worm begins to turn away from the repellent.
+        The plate is not to scale.
+      </figcaption>
+    </figure>
+
+    <div class="column prose" style="margin-top: 2rem;">
+      <p>
+        Three things to try. Put food and diacetyl on the plate, then
+        <button type="button" class="set" data-preset="food">raise <i>eat-4</i> above <i>odr-10</i></button>:
+        the worm leaves the odour for the lawn.
+        <button type="button" class="set" data-preset="inhibit">Raise <i>unc-47</i> above both</button>
+        and it stops responding to either.
+        <button type="button" class="set" data-preset="slow">Drop <i>glr-1</i> to 10</button>
+        and it still finds its target, slowly.
+      </p>
+    </div>
+
+    <section id="genes">
+      <div class="column prose">
+        <h2>The four genes</h2>
+        <p>
+          Each slider stands for one gene. Three act at the synapse: two load neurotransmitter into vesicles and one
+          receives it. The fourth acts at the tip of a sensory neuron, where an odour is first detected.
+        </p>
+      </div>
+      <div class="wide">
+        <table class="genes">
+          <thead>
+            <tr>
+              <th scope="col">Gene</th>
+              <th scope="col">Product</th>
+              <th scope="col">Where it acts</th>
+              <th scope="col">Without it</th>
+              <th scope="col">In this model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">unc-47<small>Chromosome III</small></th>
+              <td data-label="Product">Vesicular GABA transporter. Loads GABA into synaptic vesicles.</td>
+              <td data-label="Where it acts">The 26 GABA neurons, including motor neurons that relax body-wall muscle on the far side of each bend.</td>
+              <td data-label="Without it">Both sides of the body contract at once when the animal is touched, and crawling is uncoordinated.</td>
+              <td data-label="In this model">Inhibitory drive. When it exceeds both <i>eat-4</i> and <i>odr-10</i>, the worm ignores stimuli and wanders.</td>
+            </tr>
+            <tr>
+              <th scope="row">eat-4<small>Chromosome III</small></th>
+              <td data-label="Product">Vesicular glutamate transporter. Loads glutamate into synaptic vesicles.</td>
+              <td data-label="Where it acts">Glutamate-releasing neurons, among them many sensory neurons and the pharyngeal neuron M3.</td>
+              <td data-label="Without it">Pharyngeal pumping is abnormal and responses to touch and chemical cues are weakened.</td>
+              <td data-label="In this model">Weight given to food. With food and diacetyl both present, the worm goes to food when <i>eat-4</i> exceeds <i>odr-10</i>.</td>
+            </tr>
+            <tr>
+              <th scope="row">odr-10<small>Chromosome X</small></th>
+              <td data-label="Product">Seven-transmembrane odorant receptor for diacetyl.</td>
+              <td data-label="Where it acts">Sensory cilia of the AWA olfactory neurons.</td>
+              <td data-label="Without it">Chemotaxis to diacetyl fails. Responses to other AWA-sensed odours remain.</td>
+              <td data-label="In this model">Weight given to the diacetyl source.</td>
+            </tr>
+            <tr>
+              <th scope="row">glr-1<small>Chromosome III</small></th>
+              <td data-label="Product">AMPA-type ionotropic glutamate receptor subunit.</td>
+              <td data-label="Where it acts">Command interneurons that set forward and backward movement.</td>
+              <td data-label="Without it">The animal does not back away from a touch to the nose.</td>
+              <td data-label="In this model">Crawling speed, and how often the worm changes heading while exploring.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="column prose" style="margin-top: 2rem;">
+        <p>
+          The genes sit at different points on the path from stimulus to movement. ODR-10 detects an odour.
+          Glutamate release, which depends on <i>eat-4</i>, carries signals from many sensory neurons onward.
+          GLR-1 receives glutamate on the interneurons that decide direction.
+          GABA release, which depends on <i>unc-47</i>, shapes the motor pattern that results.
+          Behaviour reflects the balance between these excitatory and inhibitory signals, and that balance is what the sliders move.
+        </p>
+      </div>
+    </section>
+
+    <section id="anatomy">
+      <div class="column prose">
+        <h2>The animal</h2>
+        <p>
+          An adult hermaphrodite is about 1&nbsp;mm long and transparent, so its organs can be seen in a light micrograph
+          of the living animal. Point at a region of the body, or choose an organ from the list.
+        </p>
+      </div>
+      <figure class="wide">
+        <div class="well">
+          <div id="c-elegans-canvas" role="img" aria-label="Micrograph of an adult C. elegans hermaphrodite, head to the left"></div>
+          <div class="organs" id="organ-list" role="group" aria-label="Organs"></div>
+        </div>
+        <figcaption id="c-elegans-text" aria-live="polite">
+          <b>Figure 2.</b> Adult hermaphrodite, head to the left.
+        </figcaption>
       </figure>
     </section>
 
-    <section aria-labelledby="path-title">
-      <h2 id="path-title" class="section-title">Suggested path</h2>
-      <div class="steps">
-        <a class="card step" href="c-elegans.html">
-          <span class="step-num">01</span>
-          <h3>Anatomy</h3>
-          <p>Familiarise yourself with the basic anatomy of this essential model organism in neurobiology and developmental biology.</p>
-          <span class="step-link">Explore the body plan &rarr;</span>
-        </a>
-        <a class="card step" href="genes.html">
-          <span class="step-num">02</span>
-          <h3>Behavioural genes</h3>
-          <p>Understand the four genes you will be manipulating and how they balance excitatory and inhibitory signalling.</p>
-          <span class="step-link">Read about the genes &rarr;</span>
-        </a>
-        <a class="card step" href="simulation.html">
-          <span class="step-num">03</span>
-          <h3>Simulation</h3>
-          <p>Dive into the simulation and experiment with gene expression. Already know <i>C. elegans</i> biology? Jump straight here.</p>
-          <span class="step-link">Start simulating &rarr;</span>
-        </a>
+    <section id="model">
+      <div class="column prose">
+        <h2>What the model does, and what it leaves out</h2>
+        <p>The worm follows four rules.</p>
+        <ul>
+          <li>If <i>unc-47</i> is higher than both <i>eat-4</i> and <i>odr-10</i>, inhibition dominates. The worm ignores attractants and wanders, changing heading often.</li>
+          <li>Otherwise it heads for diacetyl or food. With both on the plate it chooses food if <i>eat-4</i> exceeds <i>odr-10</i>, and diacetyl if not.</li>
+          <li><i>glr-1</i> sets crawling speed and how often the worm picks a new heading while exploring.</li>
+          <li>Within a fixed distance of the repellent, the worm turns away from it.</li>
+        </ul>
+        <p>These rules are a sketch of the biology, and several things are missing.</p>
+        <ul>
+          <li>There are no neurons or synapses. Expression levels are compared as numbers, and the larger one wins.</li>
+          <li>The worm steers straight at a source. A real worm cannot see where an odour comes from. It climbs the concentration gradient by turning more often when things get worse (Pierce-Shimomura et al., 1999) and by curving gradually towards higher concentrations (Iino and Yoshida, 2009).</li>
+          <li>Overexpressing <i>unc-47</i> in a living animal would not make it ignore food. The first rule stands in for inhibition outweighing excitation in general.</li>
+          <li>There is one animal. Chemotaxis is normally measured across a population, as an index from &minus;1 to 1.</li>
+        </ul>
       </div>
     </section>
 
-    <section class="card about" aria-labelledby="about-title">
-      <h2 id="about-title" class="section-title">Motivation</h2>
-      <p>
-        My motivation for this project is to explore my passion for neurobiology through the lens of technology.
-        By integrating these fields, I aim to deepen my understanding while continuously discovering new aspects of this vast and evolving discipline.
-      </p>
+    <section id="references">
+      <div class="column">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>Bargmann CI, Hartwieg E, Horvitz HR (1993). Odorant-selective genes and neurons mediate olfaction in <i>C. elegans</i>. <i>Cell</i> 74, 515&ndash;527.</li>
+          <li>Hart AC, Sims S, Kaplan JM (1995). Synaptic code for sensory modalities revealed by <i>C. elegans</i> GLR-1 glutamate receptor. <i>Nature</i> 378, 82&ndash;85.</li>
+          <li>Iino Y, Yoshida K (2009). Parallel use of two behavioral mechanisms for chemotaxis in <i>Caenorhabditis elegans</i>. <i>Journal of Neuroscience</i> 29, 5370&ndash;5380.</li>
+          <li>Lee RYN, Sawin ER, Chalfie M, Horvitz HR, Avery L (1999). EAT-4, a homolog of a mammalian sodium-dependent inorganic phosphate cotransporter, is necessary for glutamatergic neurotransmission in <i>Caenorhabditis elegans</i>. <i>Journal of Neuroscience</i> 19, 159&ndash;167.</li>
+          <li>Maricq AV, Peckol E, Driscoll M, Bargmann CI (1995). Mechanosensory signalling in <i>C. elegans</i> mediated by the GLR-1 glutamate receptor. <i>Nature</i> 378, 78&ndash;81.</li>
+          <li>McIntire SL, Reimer RJ, Schuske K, Edwards RH, Jorgensen EM (1997). Identification and characterization of the vesicular GABA transporter. <i>Nature</i> 389, 870&ndash;876.</li>
+          <li>Pierce-Shimomura JT, Morse TM, Lockery SR (1999). The fundamental role of pirouettes in <i>Caenorhabditis elegans</i> chemotaxis. <i>Journal of Neuroscience</i> 19, 9557&ndash;9569.</li>
+          <li>Sengupta P, Chou JH, Bargmann CI (1996). <i>odr-10</i> encodes a seven transmembrane domain olfactory receptor required for responses to the odorant diacetyl. <i>Cell</i> 84, 899&ndash;909.</li>
+        </ol>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span>Built by Shritik with p5.js</span>
-      <a href="https://github.com/shritiks/c-elegans">Source on GitHub</a>
+  <footer>
+    <div class="column">
+      Built by Shritik with p5.js, as a way to learn how neurotransmitter genes shape behaviour.
+      The code is <a href="https://github.com/shritiks/c-elegans">on GitHub</a>.
     </div>
   </footer>
 
+  <script src="js/p5.min.js"></script>
+  <script src="js/Simulation.js"></script>
+  <script src="js/Worm.js"></script>
 </body>
 </html>

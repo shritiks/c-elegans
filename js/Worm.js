@@ -1,385 +1,122 @@
-let WormImg;
-let headOverlay, pharynxOverlay, intestineOverlay, tailOverlay;
-let regions = [];
-let scaleFactor = 1;
+// Figure 2: interactive anatomy (p5.js, instance mode)
+//
+// The micrograph and the organ overlays are drawn in the original 1000 x 700 layout, in which the hover
+// regions were measured. That layout stretched the worm vertically, so the whole drawing is scaled by
+// Y_SCALE to restore the micrograph's proportions, and the pointer position is mapped back before hit testing.
 
-function preload(){
-    WormImg = loadImage('images/C_elegans.png', 
-        // () => { console.log("Image loaded successfully."); }, 
-        // (err) => { console.error("Error loading image:", err); }
-    );
-    headOverlay = loadImage('images/Head.png');
-    intestineOverlay = loadImage('images/Intestine.png');
-    uterusOverlay = loadImage('images/Uterus.png');
-    pharynxOverlay = loadImage('images/Pharynx.png');
-    PGonadOverlay = loadImage('images/Proximal_Gonad.png');
-    DGonadOverlay = loadImage('images/Distal_Gonad.png');
-    anusOverlay = loadImage('images/Anus.png')
-    TailOverlay = loadImage('images/Tail.png')
-    VulvaOverlay = loadImage('images/Vulva.png')
-}
+new p5(function (p) {
+    const W = 1000, H = 700;        // original layout
+    const Y_TOP = 150, Y_BOTTOM = 550;
+    const Y_SCALE = 0.75;
+    const HIGHLIGHT = [220, 203, 133, 215];
 
+    // hits: [x, y, radius] in the original layout
+    const ORGANS = [
+        { name: "Head", file: "Head.png",
+          desc: "Contains most of the nervous system, including the ganglia around the pharynx that form the worm's “brain”. It also houses sensory neurons that detect chemical, tactile and thermal stimuli. The excretory pore opens on its ventral side.",
+          hits: [[181,430,5],[147,456,5],[215,388,5],[215,440,20],[240,415,20]] },
+        { name: "Pharynx", file: "Pharynx.png",
+          desc: "A muscular, two-lobed organ that takes in and grinds food. It has its own basal lamina, neurons, muscles and epithelium, and pumps food into the intestine through a valve.",
+          hits: [[172,456,20],[215,410,20],[150,478,20],[197,430,13],[130,495,10]] },
+        { name: "Intestine", file: "Intestine.png",
+          desc: "Twenty cells arranged as a tube around a central lumen. Microvilli on their inner surfaces absorb nutrients.",
+          hits: [[234,398,10],[269,358,10],[302,321,10],[330,290,10],[770,420,15],[600,270,15],[665,325,15],[545,235,15]] },
+        { name: "Distal gonad", file: "Distal_Gonad.png",
+          desc: "A stem cell niche in which germline stem cells divide by mitosis. Somatic sheath cells and a basal lamina wrap it and support the germ cells as they enter meiosis.",
+          hits: [[774,385,25],[707,350,30],[650,290,25],[330,284,25],[290,315,25],[260,350,25]] },
+        { name: "Proximal gonad", file: "Proximal_Gonad.png",
+          desc: "Lies on the ventral side and holds maturing oocytes or sperm inside a thicker gonadal sheath. Gametes mature here before ovulation.",
+          hits: [[275,370,15],[311,335,15],[343,293,15],[660,340,15],[680,360,15],[720,395,15]] },
+        { name: "Uterus", file: "Uterus.png",
+          desc: "Holds fertilised eggs until they are laid. It opens to the outside through the vulva.",
+          hits: [[450,240,25],[520,250,25],[570,285,25],[490,245,25]] },
+        { name: "Vulva", file: "Vulva.png",
+          desc: "A ventral opening at mid-body through which eggs are laid. It connects the uterus to the outside.",
+          hits: [[513,265,20]] },
+        { name: "Anus", file: "Anus.png",
+          desc: "A ventral opening near the tail for excretion. It is lined with cuticle and is the end of the alimentary system.",
+          hits: [[797,445,25]] },
+        { name: "Tail", file: "Tail.png",
+          desc: "Tapers to a fine whip beyond the anus. It contains small ganglia and sensory neurons.",
+          hits: [[830,460,25]] }
+    ];
 
-function setup() {
-    if (document.getElementById("c-elegans").style.display !== "block") {
-        return; // Don't run if C. elegans tab isn't active
-    }
-  
+    let wormImg;
+    let hovered = null;    // organ under the pointer
+    let pinned = null;     // organ chosen from the list
+    let shown;             // what the caption currently describes
+    const caption = document.getElementById("c-elegans-text");
+    const list = document.getElementById("organ-list");
 
-    let canvasParent = document.getElementById("c-elegans-canvas");
-        if (canvasParent) {
-          let canvas = createCanvas(1000, 700);
-          canvas.parent("c-elegans-canvas");
-          // For example, if you have direct access to the HTML element:
-        } else {
-          console.error("Canvas parent div not found!");
+    p.preload = function () {
+        wormImg = p.loadImage("images/C_elegans.png");
+        ORGANS.forEach(function (o) { o.overlay = p.loadImage("images/" + o.file); });
+    };
+
+    p.setup = function () {
+        const canvas = p.createCanvas(W, (Y_BOTTOM - Y_TOP) * Y_SCALE);
+        canvas.parent("c-elegans-canvas");
+        p.imageMode(p.CENTER);
+
+        ORGANS.forEach(function (o) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.textContent = o.name;
+            b.setAttribute("aria-pressed", "false");
+            b.addEventListener("click", function () { pinned = pinned === o ? null : o; });
+            b.addEventListener("mouseenter", function () { hovered = o; });
+            b.addEventListener("mouseleave", function () { hovered = null; });
+            list.appendChild(b);
+            o.button = b;
+        });
+    };
+
+    p.draw = function () {
+        p.clear();
+
+        // Pointer in the original layout's coordinates
+        const mx = p.mouseX, my = p.mouseY / Y_SCALE + Y_TOP;
+        const over = p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height;
+        if (over) {
+            hovered = null;
+            let best = 1;
+            ORGANS.forEach(function (o) {
+                o.hits.forEach(function (h) {
+                    const d = p.dist(mx, my, h[0], h[1]) / h[2];
+                    if (d < best) { best = d; hovered = o; }
+                });
+            });
         }
-        imageMode(CENTER);
-    
-        let wormCenterX = width / 2;
-        let wormCenterY = height / 2;
+        const active = hovered || pinned;
 
-        regions = [
-            { 
-            name: "Head", 
-            x: 181, 
-            y: 480-50,   // Adjust as needed
-            overlay: headOverlay, 
-            desc: "Head: The head contains the majority of the nervous system, including ganglia surrounding the pharynx, forming the “brain” of the worm. It also houses sensory neurons that detect chemical, tactile, and thermal stimuli. The excretory pore is located ventrally in the head",
-            hoverRadius: 5
-            },
-            { 
-                name: "Head", 
-                x: 147, 
-                y: 506-50,   // Adjust as needed
-                overlay: headOverlay, 
-                desc: "Head: The head contains the majority of the nervous system, including ganglia surrounding the pharynx, forming the “brain” of the worm. It also houses sensory neurons that detect chemical, tactile, and thermal stimuli. The excretory pore is located ventrally in the head",
-                hoverRadius: 5
-                },
-                { 
-                    name: "Head", 
-                    x: 215, 
-                    y: 438-50,   // Adjust as needed
-                    overlay: headOverlay, 
-                    desc: "Head: The head contains the majority of the nervous system, including ganglia surrounding the pharynx, forming the “brain” of the worm. It also houses sensory neurons that detect chemical, tactile, and thermal stimuli. The excretory pore is located ventrally in the head",
-                    hoverRadius: 5
-                    },
-                    { 
-                        name: "Head", 
-                        x: 215, 
-                        y: 490-50,   // Adjust as needed
-                        overlay: headOverlay, 
-                        desc: "Head: The head contains the majority of the nervous system, including ganglia surrounding the pharynx, forming the “brain” of the worm. It also houses sensory neurons that detect chemical, tactile, and thermal stimuli. The excretory pore is located ventrally in the head",
-                        hoverRadius: 20
-                        },
-                        { 
-                            name: "Head", 
-                            x: 240, 
-                            y: 465-50,   // Adjust as needed
-                            overlay: headOverlay, 
-                            desc: "Head: The head contains the majority of the nervous system, including ganglia surrounding the pharynx, forming the “brain” of the worm. It also houses sensory neurons that detect chemical, tactile, and thermal stimuli. The excretory pore is located ventrally in the head",
-                            hoverRadius: 20
-                            },
-            { 
-              name: "Pharynx", 
-              x:  172,
-              y: 506-50,   // Adjust as needed
-              overlay: pharynxOverlay, 
-              desc: "Pharynx: A muscular, two-lobed organ responsible for food intake and processing. It has its own basal lamina, neuronal system, muscles, and epithelium. The pharynx pumps food into the intestine via a valve",
-              hoverRadius: 20
-            },
-            { 
-                name: "Pharynx", 
-                x:  215,
-                y: 460-50,   // Adjust as needed
-                overlay: pharynxOverlay, 
-                desc: "Pharynx: A muscular, two-lobed organ responsible for food intake and processing. It has its own basal lamina, neuronal system, muscles, and epithelium. The pharynx pumps food into the intestine via a valve",
-                hoverRadius: 20
-              },
-              { 
-                name: "Pharynx", 
-                x:  150,
-                y: 528-50,   // Adjust as needed
-                overlay: pharynxOverlay, 
-                desc: "Pharynx: A muscular, two-lobed organ responsible for food intake and processing. It has its own basal lamina, neuronal system, muscles, and epithelium. The pharynx pumps food into the intestine via a valve",
-                hoverRadius: 20
-              },
-              { 
-                name: "Pharynx", 
-                x:  197,
-                y: 480-50,   // Adjust as needed
-                overlay: pharynxOverlay, 
-                desc: "Pharynx: A muscular, two-lobed organ responsible for food intake and processing. It has its own basal lamina, neuronal system, muscles, and epithelium. The pharynx pumps food into the intestine via a valve",
-                hoverRadius: 13
-              },
-              { 
-                name: "Pharynx", 
-                x:  130,
-                y: 545-50,   // Adjust as needed
-                overlay: pharynxOverlay, 
-                desc: "Pharynx: A muscular, two-lobed organ responsible for food intake and processing. It has its own basal lamina, neuronal system, muscles, and epithelium. The pharynx pumps food into the intestine via a valve",
-                hoverRadius: 10
-              },
-            { 
-                name: "First Intestine", 
-                x:  234,
-                y: 448-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 10
-              },
-            { 
-                name: "First Intestine", 
-                x:  269,
-                y: 408-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 10
-              },
-              { 
-                name: "First Intestine", 
-                x:  302,
-                y: 371-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 10
-              },
-              { 
-                name: "Second Intestine", 
-                x:  330,
-                y: 340-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 10
-              },
-              { 
-                name: "Last Intestine", 
-                x:  770,
-                y: 470-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 15
-              },
-              { 
-                name: "Last Intestine", 
-                x:  600,
-                y: 320-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 15
-              },
-              { 
-                name: "Last Intestine", 
-                x:  665,
-                y: 375-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 15
-              }, { 
-                name: "Last Intestine", 
-                x:  545,
-                y: 285-50,   // Adjust as needed
-                overlay: intestineOverlay, 
-                desc: "Intestine: Composed of 20 cells arranged into a tubular structure with a central lumen. Intestinal cells have microvilli on their apical surfaces for nutrient absorption",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  275,
-                y: 420-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  311,
-                y: 385-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  343,
-                y: 343-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  660,
-                y: 390-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  680,
-                y: 410-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Proximal Gonad", 
-                x:  720,
-                y: 445-50,   // Adjust as needed
-                overlay: PGonadOverlay, 
-                desc: "Proximal Gonad: Located on the ventral side, it contains maturing oocytes or sperm surrounded by a thicker gonadal sheath. This region is involved in gamete maturation and ovulation",
-                hoverRadius: 15
-              },
-              { 
-                name: "Uterus", 
-                x:  450,
-                y: 290-50,   // Adjust as needed
-                overlay: uterusOverlay, 
-                desc: "Uterus: Part of the reproductive system where fertilized eggs are stored before being laid. It connects to the vulva for egg deposition",
-                hoverRadius: 25
-              },
-              { 
-                name: "Uterus", 
-                x:  520,
-                y: 300-50,   // Adjust as needed
-                overlay: uterusOverlay, 
-                desc: "Uterus: Part of the reproductive system where fertilized eggs are stored before being laid. It connects to the vulva for egg deposition",
-                hoverRadius: 25
-              },
-              { 
-                name: "Uterus", 
-                x:  570,
-                y: 335-50,   // Adjust as needed
-                overlay: uterusOverlay, 
-                desc: "Uterus: Part of the reproductive system where fertilized eggs are stored before being laid. It connects to the vulva for egg deposition",
-                hoverRadius: 25
-              },
-              { 
-                name: "Uterus", 
-                x:  490,
-                y: 245,   // Adjust as needed
-                overlay: uterusOverlay, 
-                desc: "Uterus: Part of the reproductive system where fertilized eggs are stored before being laid. It connects to the vulva for egg deposition",
-                hoverRadius: 25
-              },
-              { 
-                name: "DGonad", 
-                x:  774,
-                y: 435-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 25
-              },
-              { 
-                name: "DGonad", 
-                x:  707,
-                y: 400-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 30
-              },
-              { 
-                name: "DGonad", 
-                x:  650,
-                y: 340-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 25
-              },
-              { 
-                name: "DGonad", 
-                x:  330,
-                y: 334-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 25
-              },
-              { 
-                name: "DGonad", 
-                x:  290,
-                y: 365-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 25
-              },
-              { 
-                name: "DGonad", 
-                x:  260,
-                y: 400-50,   // Adjust as needed
-                overlay: DGonadOverlay, 
-                desc: "Distal Gonad: The distal gonad serves as a stem cell niche with germline stem cells undergoing mitosis. It is ensheathed by somatic sheath cells and basal lamina, supporting germ cell development as they transition to meiosis",
-                hoverRadius: 25
-              },
-              { 
-                name: "Anus", 
-                x:  797,
-                y: 495-50,   // Adjust as needed
-                overlay: anusOverlay, 
-                desc: "Anus: A ventral opening near the tail that allows waste excretion. It is lined with cuticle and forms part of the alimentary system",
-                hoverRadius: 25
-              },
-              { 
-                name: "Tail", 
-                x:  830,
-                y: 510-50,   // Adjust as needed
-                overlay: TailOverlay, 
-                desc: "Tail: Tapered at the posterior end, it contains small ganglia and neurons. The tail whip is located just beyond the anus and contributes to locomotion and sensory functions",
-                hoverRadius: 25
-              },
-              { 
-                name: "Vulva", 
-                x:  513,
-                y: 315-50,   // Adjust as needed
-                overlay: VulvaOverlay, 
-                desc: "Vulva: A ventral opening in the midbody that facilitates egg-laying. It connects the uterus to the external environment",
-                hoverRadius: 20
-              },
-        ];
-}
+        p.push();
+        p.scale(1, Y_SCALE);
+        p.translate(0, -Y_TOP);
+        const s = Math.min(W / wormImg.width, H / wormImg.height);
+        p.image(wormImg, W / 2, H / 2, wormImg.width * s - 250, wormImg.height * s);
+        if (active) {
+            // The overlays are grey, so a tint alone comes out dull; a second additive pass lifts it
+            p.tint(HIGHLIGHT[0], HIGHLIGHT[1], HIGHLIGHT[2], HIGHLIGHT[3]);
+            p.image(active.overlay, W / 2 + 12, H / 2, active.overlay.width * s - 250, active.overlay.height * s);
+            p.blendMode(p.ADD);
+            p.tint(HIGHLIGHT[0], HIGHLIGHT[1], HIGHLIGHT[2], 110);
+            p.image(active.overlay, W / 2 + 12, H / 2, active.overlay.width * s - 250, active.overlay.height * s);
+            p.blendMode(p.BLEND);
+            p.noTint();
+        }
+        p.pop();
 
+        if (active !== shown) {
+            shown = active;
+            ORGANS.forEach(function (o) { o.button.setAttribute("aria-pressed", String(o === active)); });
+            caption.innerHTML = "<b>Figure 2.</b> Adult hermaphrodite, head to the left. " +
+                (active ? "<b>" + active.name + ".</b> " + active.desc : "");
+        }
+    };
 
-function draw() {
-    clear();
-    
-    let hoveredRegion = null;
-    let hoveredText = "";
-    let mouseOver = true;
-    // fill(255);
-    // textSize(16);
-    // text("X: " + mouseX + " Y: " + mouseY, mouseX + 10, mouseY - 10);
-
-     // Calculate a scale factor that fits the image within the canvas while preserving aspect ratio.
-  let scaleFactor = min(width / WormImg.width, height / WormImg.height);
-
-  // Draw the image centered, scaling it down.
-  image(WormImg, width / 2, height / 2, WormImg.width * scaleFactor - 250, WormImg.height * scaleFactor);
-    
-  for (let region of regions) {
-    // Use the distance from the mouse to the region's center as a simple hover check.
-    if (dist(mouseX, mouseY, region.x, region.y) < region.hoverRadius) {
-        hoveredRegion=region
-        tint(57, 255, 20, 200);
-        image(region.overlay, width / 2+12, height / 2, region.overlay.width * scaleFactor-250, region.overlay.height * scaleFactor);
-        noTint();
-    }
-}
-
-  // Update the description panel (only when the hovered organ changes)
-  let descriptionBox = document.getElementById("c-elegans-text");
-  let key = hoveredRegion ? hoveredRegion.desc : "";
-  if (descriptionBox && descriptionBox.dataset.key !== key) {
-      descriptionBox.dataset.key = key;
-      if (hoveredRegion) {
-          let split = hoveredRegion.desc.indexOf(": ");
-          let title = hoveredRegion.desc.slice(0, split);
-          let body = hoveredRegion.desc.slice(split + 2);
-          descriptionBox.innerHTML = "<strong>" + title + "</strong>" + body + ".";
-      } else {
-          descriptionBox.innerHTML = '<span class="hint">Hover over a region on the <i>C. elegans</i> body to see details on the organ.</span>';
-      }
-  }
-
-
-}
-
+    // Tapping the worm on a touch screen pins the organ, since there is no hover
+    p.mousePressed = function () {
+        const over = p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height;
+        if (over) pinned = hovered;
+    };
+});

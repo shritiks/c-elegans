@@ -1,51 +1,48 @@
-# Gene Expression Simulation for Behavioural Genetics
+# Gene expression simulation in *C. elegans*
 
-## 🧬 Overview
-This project is an interactive **gene expression simulation** for *C. elegans*, focusing on **behavioral genetics**. Users can adjust **gene expression levels** and observe how they influence worm behavior in response to food and odor sources.
+An interactive article about four neuronal genes in *C. elegans* (`unc-47`, `eat-4`, `odr-10`, `glr-1`) and a
+simulated worm whose behaviour changes with their expression.
 
-## 🚀 Features
-- **Adjustable Gene Expression**: Sliders for `unc-47`, `eat-4`, `odr-10`, and `glr-1`.
-- **Dynamic Environment**: Add/remove **food** and **odor sources**.
-- **Interactive Worm Model**: The worm moves based on gene expression levels.
-- **Real-time Descriptions**: Hovering or selecting inputs updates the description panel.
-- **Smooth Visuals**: Custom styling for a **dark mode interface**.
+Live: https://shritiks.github.io/c-elegans/
 
-## 🎮 How to Use
-1. **Adjust gene expression** using the sliders.
-2. **Toggle food and odor sources** using the checkboxes.
-3. **Observe how the worm moves** based on expression levels.
-4. On the anatomy page, **hover over the worm** to highlight each organ and read what it does.
+## What is on the page
 
-## 🛠️ Technologies Used
-- **p5.js** – Interactive simulation rendering
-- **JavaScript (ES6)** – Logic & interactivity
-- **HTML/CSS** – UI structure and design
-- **GitHub Pages** – Hosting the live project
+- **Simulation.** A worm on an agar plate. Four sliders set gene expression; food, diacetyl and a repellent can
+  be added to the plate and dragged around. The current behaviour, speed and elapsed time are shown under the plate.
+- **Genes.** What each gene encodes, where it acts, the loss-of-function phenotype, and what its slider does in the model.
+- **Anatomy.** A micrograph of an adult hermaphrodite. Pointing at a region highlights the organ and describes it.
+- **Model.** The rules the worm follows and the biology they leave out.
 
-## 📂 Folder Structure
+## The model
+
+1. If `unc-47` is higher than both `eat-4` and `odr-10`, the worm ignores attractants and wanders.
+2. Otherwise it heads for diacetyl or food. With both present it chooses food if `eat-4` exceeds `odr-10`.
+3. `glr-1` sets crawling speed and how often the worm changes heading while exploring.
+4. Within a fixed distance of the repellent, the worm turns away.
+
+This is a rule-based sketch, not a circuit model. The page lists its limitations.
+
+## Files
+
 ```
-├── 📂 images/            # Worm micrograph, organ overlays, link-preview image
-├── 📂 js/
-│   ├── Worm.js           # Interactive anatomy (hover to highlight organs)
-│   └── Simulation.js     # Worm movement & gene expression logic
-├── 📜 index.html         # Home page
-├── 📜 c-elegans.html     # Anatomy page
-├── 📜 genes.html         # Behavioural genes page
-├── 📜 simulation.html    # Simulation page
-├── 📜 style.css          # Shared styling
-└── 📜 README.md          # Project documentation (this file)
+index.html         The article
+style.css          Styling
+js/Simulation.js   Figure 1: worm behaviour (p5.js, instance mode)
+js/Worm.js         Figure 2: interactive anatomy (p5.js, instance mode)
+js/p5.min.js       p5.js 1.4.0
+images/            Micrograph, organ overlays, link-preview image
+c-elegans.html, genes.html, simulation.html, home.html
+                   Redirects from the old multi-page layout
 ```
 
-## 🌍 Live Demo
-🔗 **[View the project online](https://shritiks.github.io/c-elegans/)**
+## Running locally
 
-## 📝 Future Improvements
-- 🏗️ Add more behavioral genes.
-- 🔬 Introduce additional environmental factors.
-- 🎨 Improve UI animations for better visualization.
+No build step. Serve the folder and open it:
 
-## 💡 Contributing
-Contributions are welcome! Feel free to **fork** the repo and submit a **pull request**.
+```
+python3 -m http.server
+```
 
-## 📜 License
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+## Licence
+
+MIT.
